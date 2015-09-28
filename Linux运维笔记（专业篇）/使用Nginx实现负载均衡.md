@@ -1,6 +1,6 @@
 ### 使用Nginx实现负载均衡 
 #### 一、系统架构及环境准备
-  ![](./nginx-upstream.jpg)
+  ![](./img/nginx-upstream.jpg)
 
   - 服务器1  ip:192.168.1.1    软件:Nginx、php-fpm、pcre
   - 服务器2  ip:192.168.1.2    软件:Nginx、php-fpm、pcre
