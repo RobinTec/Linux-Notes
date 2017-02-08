@@ -3,4 +3,5 @@
 
 ### 文章列表
 - [Git for windows中文乱码解决方案](Git for windows中文乱码解决方案.md)
+- [叼叼的vim](叼叼的vim.md)
 - 未完待续。。。
