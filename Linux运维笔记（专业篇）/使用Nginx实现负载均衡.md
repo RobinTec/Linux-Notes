@@ -14,42 +14,51 @@
 #### 三、实现
 1. 软件安装并启动（nginx编译安装请到本文最后进行查阅），请自行对应上文中环境进行软件安装（rpm包安装或者源码安装均可，pcre用于使nginx支持正则表达式）
 2. 服务器4配置：
+
   a. 配置nfs共享，将程序源代码copy到共享目录中，假设共享目录为/web，同时修改目录权限为777，操作如下：
-  ```# chmod -R 777 /web```
+  > \# chmod -R 777 /web
+
   b. 编辑/etc/exports文件添加如下内容实现程序源代码共享：
-  ```> /web  *(rw,sync)```
+  > \> /web  *(rw,sync)
+
   c. 重启nfs服务
-  ```# service nfs restart```
+  > \# service nfs restart
+
   d. 以root身份登录MySQL创建用户并授权为可远程连接读写，MySQL内命令如下：
-  ```
-  > GRANT ALL ON *.* TO nginx@’%’ IDENTIFIED BY ‘123’;
-  > FLUSH PRIVILEGES; 
+
+  > \> GRANT ALL ON *.* TO nginx@’%’ IDENTIFIED BY ‘123’;    
+  > \> FLUSH PRIVILEGES;
   此处创建的用户名为nginx，密码为123，对数据库具有所有操作权限
-  ```
+
+
 3. 服务器二/三配置（服务器二和服务器三配置一样）
+
   a. 启动php-fpm
-  ```# service php-fpm start```
+  > \# service php-fpm start
+
   b. 整合Nginx和PHP，对Nginx主配置文件如下部分进行修改：
-  ```
-  location / {
-    root html;
-    index index.php index.html index.htm; # 注意，此处多了一个index.php
-  }
-  ```
-  c. 去掉以下行的注释
-  ```
-  location ~ .php$ {
-    root html;
-    fastcgi_pass 127.0.0.1:9000;
-    fastcgi_index index.php;
-    fastcgi_param SCRIPT_FILENAME /scripts$fastcgi_script_name;
-    include fastcgi_params;
-  }
-  ```
+  > location / {    
+  >     root html;    
+  >     index index.php index.html index.htm; # 注意，此处多了一个index.php    
+  >   }
+
+  c. 去掉以下行的注释    
+  > location ~ .php$ {
+  >   root html;
+  >   fastcgi_pass 127.0.0.1:9000;
+  >   fastcgi_index index.php;
+  >   fastcgi_param SCRIPT_FILENAME /scripts$fastcgi_script_name;
+  >   include fastcgi_params;
+  > }
+
+
   d. 从服务器四挂载程序源代码到本机网站主目录下，此处的配置是上文第二段配置中的root字段，即nginx目录下的html目录
-  ```# mount -t nfs 192.168.1.4:/web /usr/local/nginx/html/```
+  > \# mount -t nfs 192.168.1.4:/web /usr/local/nginx/html/`
+
   e. 重新加载nginx配置文件
-  ```# /usr/local/nginx/sbin/nginx -s reload```
+  > \# /usr/local/nginx/sbin/nginx -s reload
+
+
 4. 服务器一配置
   清空nginx主配置文件并添加如下内容：
 ```
@@ -85,7 +94,7 @@ http {
 通过上述四台主机上的任何一台的浏览器访问服务器一，重复多次，可分别查看到服务器二和服务器三的访问日志的访问情况，说明对服务器一的访问已经被均衡到后台的服务器二和服务器三上了。
 
 #### 五、编译安装Nginx
-1.准备软件包：nginx-1.4.4.tar.gz  pcre-8.10.tar.gz
+1.准备软件包：nginx-1.4.4.tar.gz  pcre-8.10.tar.gz    
 2.在上述软件包所在目录（假定为/tmp/soft/目录，下面用得到）下创建安装脚本内容如下：（假定脚本名为nginx_install.sh）
 ```
 #!/bin/bash
